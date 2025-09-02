@@ -12,6 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.quickjot.ui.screens.AddNoteScreen
 import com.example.quickjot.ui.screens.NotesScreen
 import com.example.quickjot.ui.screens.NotesViewModel
 import com.example.quickjot.ui.theme.QuickJotTheme
@@ -23,11 +28,29 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QuickJotTheme {
-                val vm : NotesViewModel = koinViewModel()
-                NotesScreen(
-                    vm
-                )
+                val navController = rememberNavController()
+
+                AppNavHost(Modifier, navController)
             }
+        }
+    }
+}
+
+@Composable
+fun AppNavHost(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    NavHost(navController, startDestination = "notes") {
+        composable("notes") {
+            NotesScreen(
+                onAddNoteClick = { navController.navigate("add") }
+            )
+        }
+        composable("add") {
+            AddNoteScreen(
+                onNoteSaved = { navController.popBackStack() }
+            )
         }
     }
 }

@@ -13,9 +13,15 @@ class NotesViewModel(private val repo: NoteRepository) : ViewModel() {
     val notes: StateFlow<List<NoteEntity>> =
         repo.getNotes().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    fun addDummyNote() {
+    fun addNote(note: NoteEntity) {
         viewModelScope.launch {
-            repo.insert(NoteEntity(title = "New Note", content = "Content"))
+            repo.insert(note)
+        }
+    }
+
+    fun deleteNote(note: NoteEntity) {
+        viewModelScope.launch {
+            repo.delete(note)
         }
     }
 }
